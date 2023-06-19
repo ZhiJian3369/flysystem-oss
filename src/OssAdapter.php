@@ -52,6 +52,9 @@ class OssAdapter implements FilesystemAdapter
         'format' => '${imageInfo.format}',
     ];
 
+    // 最小上传文件大小
+    const MIN_LENGTH = 0;
+
     /**
      * @var
      */
@@ -258,7 +261,7 @@ class OssAdapter implements FilesystemAdapter
      *
      * @throws \Exception
      */
-    public function signatureConfig(string $prefix = '', $callBackUrl = null, array $customData = [], int $expire = 30, int $contentLengthRangeValue = 1048576000, array $systemData = [])
+    public function signatureConfig(string $prefix = '', $callBackUrl = null, array $customData = [], int $expire = 30, int $contentLengthRangeValue = 1048576000, array $systemData = [], int $minLength = self::MIN_LENGTH)
     {
         $prefix = $this->prefixer->prefixPath($prefix);
 
@@ -300,7 +303,7 @@ class OssAdapter implements FilesystemAdapter
         // 最大文件大小.用户可以自己设置
         $condition = [
             0 => 'content-length-range',
-            1 => 0,
+            1 => $minLength,
             2 => $contentLengthRangeValue,
         ];
         $conditions[] = $condition;
